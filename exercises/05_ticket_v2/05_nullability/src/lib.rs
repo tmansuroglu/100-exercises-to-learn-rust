@@ -36,7 +36,12 @@ impl Ticket {
         }
     }
     pub fn assigned_to(&self) -> Option<&String> {
-        todo!()
+        // status inprogress ise assigned to you verecek
+        // status in progress değilse ise none verecek
+       match &self.status {
+        Status::InProgress { assigned_to } => Some(&assigned_to),
+        _=> None,
+       }
     }
 }
 
