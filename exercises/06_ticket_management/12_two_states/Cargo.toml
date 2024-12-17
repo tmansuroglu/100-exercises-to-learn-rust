@@ -4,4 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+uuid = { version = "1.3", features = ["v4"] }
 ticket_fields = { path = "../../../helpers/ticket_fields" }

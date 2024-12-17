@@ -7,18 +7,19 @@
 // and returns an `Option<&Ticket>`.
 
 use ticket_fields::{TicketDescription, TicketTitle};
+use uuid::Uuid;
 
 #[derive(Clone)]
 pub struct TicketStore {
     tickets: Vec<Ticket>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct TicketId(u64);
+// #[derive(Clone, Copy, Debug, PartialEq)]
+// pub struct TicketId(Uuid);
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ticket {
-    pub id: TicketId,
+    pub id: Uuid,
     pub title: TicketTitle,
     pub description: TicketDescription,
     pub status: Status,
@@ -37,15 +38,41 @@ pub enum Status {
     Done,
 }
 
+impl Ticket {
+    pub fn new(id: Uuid, title: TicketTitle, description: TicketDescription, status:Status) -> Self {
+        Ticket {
+            id,
+            title,
+            description,
+            status,
+        }
+    }
+}
+
 impl TicketStore {
+    
     pub fn new() -> Self {
         Self {
             tickets: Vec::new(),
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    pub fn add_ticket(&mut self, ticket: TicketDraft) -> Uuid {
+        let id = TicketStore::generate_id();
+
+        self.tickets.push(Ticket::new(id, ticket.title, ticket.description, Status::ToDo));
+
+        return id
+    }
+
+    pub fn generate_id() -> Uuid {
+        let unique_id = Uuid::new_v4();
+
+        unique_id
+    }
+
+    pub fn get(&self, id:Uuid) -> Option<&Ticket> {
+        self.tickets.iter().find(|x| x.id == id)
     }
 }
 
